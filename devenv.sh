@@ -6,15 +6,6 @@ cd ~
 sudo apt -qq update && sudo apt -y upgrade
 echo -e ""
 
-# Lubuntu panels setup
-echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
-if [ -e ./panels ] then
-  cp ./panels ~/.config/lxpanel/Lubuntu/panels
-  lxpanelctl restart
-else
-  echo -e "Panels config not found, continuing..."
-fi
-
 # curl, build-essential
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING curl and build-essential.............................................$(tput sgr0)\n"
 if command -v curl &>/dev/null; then
@@ -182,6 +173,15 @@ fi
 echo -e "git.........................................$(git --version | awk '{print $3}')"
 echo -e "hub.........................................$(hub --version | tail -n 1 | awk '{print $3}')"
 echo -e "atom........................................$(atom -v | head -n 1 | awk '{print $3}')"
+
+# Lubuntu panels setup
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
+if [ -e ./panels ] then
+  cp ./panels ~/.config/lxpanel/Lubuntu/panels
+  lxpanelctl restart
+else
+  echo -e "Panels config not found, continuing..."
+fi
 
 # github SSH setup
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP GITHUB SSH..........................................................$(tput sgr0)\n"
