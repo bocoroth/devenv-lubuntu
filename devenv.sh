@@ -173,3 +173,19 @@ fi
 echo -e "git.........................................$(git --version | awk '{print $3}')"
 echo -e "hub.........................................$(hub --version | tail -n 1 | awk '{print $3}')"
 echo -e "atom........................................$(atom -v | head -n 1 | awk '{print $3}')"
+
+# github SSH setup
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP GITHUB SSH..........................................................$(tput sgr0)\n"
+if ls -al ~/.ssh | grep id_rsa.pub &>/dev/null; then
+  echo -e "ssh key found, assuming already set up (if not, do it manually).\n"
+else
+  sudo apt install -y xclip
+  ssh-keygen -t rsa -b 4096 -C "bocoroth@gmail.com"
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_rsa
+  xclip -sel clip < ~/.ssh/id_rsa.pub
+  read -p "Key copied to clipboard. Press enter to launch firefox and paste key into 'Key' box."
+  firefox https://github.com/settings/ssh/new
+  read -p "Waiting... press enter once key is set up to test."
+  ssh -T git@github.com
+fi
