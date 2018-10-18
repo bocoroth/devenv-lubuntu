@@ -6,6 +6,15 @@ cd ~
 sudo apt -qq update && sudo apt -y upgrade
 echo -e ""
 
+# Lubuntu panels setup
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
+if [ -e ./panels ] then
+  cp ./panels ~/.config/lxpanel/Lubuntu/panels
+  lxpanelctl restart
+else
+  echo -e "Panels config not found, continuing..."
+fi
+
 # curl, build-essential
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING curl and build-essential.............................................$(tput sgr0)\n"
 if command -v curl &>/dev/null; then
@@ -184,7 +193,7 @@ else
   eval "$(ssh-agent -s)"
   ssh-add ~/.ssh/id_rsa
   xclip -sel clip < ~/.ssh/id_rsa.pub
-  read -p "Key copied to clipboard. Press enter to launch firefox and paste key into 'Key' box."
+  read -p "Key copied to clipboard. Press enter to launch firefox (paste key into 'Key' box)."
   firefox https://github.com/settings/ssh/new
   read -p "Waiting... press enter once key is set up to test."
   ssh -T git@github.com
