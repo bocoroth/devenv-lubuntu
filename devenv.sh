@@ -70,6 +70,7 @@ if command -v node &>/dev/null; then
 else
   wget -qO- https://deb.nodesource.com/setup_8.x | sudo -E bash -
   sudo apt install -y nodejs
+  sudo chown -R $USER:$(id -gn $USER) /home/matt/.config
   echo -e ""
 fi
 
