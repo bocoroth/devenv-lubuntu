@@ -184,8 +184,8 @@ echo -e "atom........................................$(atom -v | head -n 1 | awk
 
 # Lubuntu panels setup
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
-if [ -e ./panels ]; then
-    cp ./panels ~/.config/lxpanel/Lubuntu/panels
+if test -a ~/devenv-lubuntu/panels; then
+    cp ~/devenv-lubuntu/panels ~/.config/lxpanel/Lubuntu/panels
     sudo lxpanelctl restart
 else
     echo -e "Panels config not found, continuing...\n"
