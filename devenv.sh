@@ -125,7 +125,7 @@ echo -e ""
 # hub
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING hub..................................................................$(tput sgr0)\n"
 if command -v hub &>/dev/null; then
-    echo -n "hub is already installed.\n"
+    echo -e "hub is already installed.\n"
 else
     go get github.com/github/hub
     cd go/src/github.com/github/hub
@@ -184,9 +184,9 @@ echo -e "atom........................................$(atom -v | head -n 1 | awk
 
 # Lubuntu panels setup
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
-if [ -e ./panels ] then
+if [ -e ./panels ]; then
     cp ./panels ~/.config/lxpanel/Lubuntu/panels
-    lxpanelctl restart
+    sudo lxpanelctl restart
 else
     echo -e "Panels config not found, continuing...\n"
 fi
