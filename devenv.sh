@@ -91,7 +91,7 @@ echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING express........
 if sudo npm -g list | grep "express@" &>/dev/null; then
     echo -e "express is already installed.\n"
 else
-    sudo npm install -g @express
+    sudo npm install -g express
     echo -e ""
 fi
 
@@ -107,8 +107,6 @@ fi
 # LAMP Stack
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING LAMP stack...........................................................$(tput sgr0)\n"
 sudo apt install -y apache2 mariadb-server mariadb-client php php-common php-mysql php-gd php-cli
-sudo systemctl status apache2
-sudo systemctl status mysql
 
 # git
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING git..................................................................$(tput sgr0)\n"
