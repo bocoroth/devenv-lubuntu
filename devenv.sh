@@ -114,10 +114,10 @@ if dpkg-query -W -f='${Status}' git | grep "ok installed" &>/dev/null; then
     echo -e "git is already installed.\n"
 else
     sudo apt install -y git-core
-    git config --global user.name "bocoroth"
-    git config --global user.email "bocoroth@gmail.com"
     echo -e ""
 fi
+git config --global user.name "bocoroth"
+git config --global user.email "bocoroth@gmail.com"
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)CHECKING git SETTINGS...........................................................$(tput sgr0)\n"
 git config --list
 echo -e ""
@@ -212,4 +212,6 @@ echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP PHPMYADMIN and 
 sudo apt install -y phpmyadmin php-mbstring php-gettext
 sudo chown -R $USER:$(id -gn $USER) /var/www/html
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+sudo phpenmod mbstring
 sudo systemctl restart apache2
+sudo reboot
