@@ -148,9 +148,69 @@ else
     echo -e ""
 fi
 
-# update/upgrade check - probably nothing to upgrade, but check anyway
-sudo apt -qq update && sudo apt -qqy upgrade
+# Lubuntu panels setup
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
+if test -a ~/devenv-lubuntu/panels; then
+    cp ~/devenv-lubuntu/panels ~/.config/lxpanel/Lubuntu/panels
+    sudo lxpanelctl restart
+else
+    echo -e "Panels config not found, continuing...\n"
+fi
+
+# ----------------------------------------------- #
+# things after here require some user interaction #
+# ----------------------------------------------- #
+
+# github SSH setup
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP GITHUB SSH..........................................................$(tput sgr0)\n"
+if ls -al ~/.ssh | grep id_rsa.pub &>/dev/null; then
+    echo -e "ssh key found, assuming already set up (if not, do it manually).\n"
+else
+    sudo apt install -y xclip
+    ssh-keygen -t rsa -b 4096 -C "bocoroth@gmail.com"
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_rsa
+    xclip -sel clip < ~/.ssh/id_rsa.pub
+    read -p "Key copied to clipboard. Press enter to launch firefox (paste key into 'Key' box)."
+    firefox https://github.com/settings/ssh/new
+    read -p "Waiting... press enter once key is set up to test."
+    ssh -T git@github.com
+fi
+
+# set up phpmyadmin
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP PHPMYADMIN and MYSQL................................................$(tput sgr0)\n"
+sudo apt install -y phpmyadmin php-mbstring php-gettext
+sudo chown -R $USER:$(id -gn $USER) /var/www/html
+ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
+sudo phpenmod mbstring
+sudo systemctl restart apache2
+
+# set up drupal
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP DRUPAL.............................................................$(tput sgr0)\n"
+curl -sS https://getcomposer.org/installer -o composer-setup.php
+sudo chown -R $USER .composer/
+composer -V
 echo -e "\n"
+
+# -- apache virtual hosts
+echo -e "Creating Apache Virtual Hosts..............."
+sudo mkdir -p /var/www/drupal.dev/public_html
+sudo chown -R $USER:$USER /var/www/drupal.dev/public_html
+sudo chmod -R 755 /var/www
+sudo echo "<html><head><title>Virtual Host Works\!</title></head><body><h1>The drupal.test virtual host is working\!</h1></body></html>" > /var/www/drupal.dev/public_html/index.html
+sudo bash -c "cat > /etc/apache2/sites-available/drupal.dev.conf" <<EOT
+<VirtualHost *:80>
+    ServerAdmin bocoroth@gmail.com
+    ServerName drupal.dev
+    ServerAlias www.drupal.dev
+    DocumentRoot /var/www/drupal.dev/public_html
+    ErrorLog /var/www/html/logs/drupal.dev/error.log
+    CustomLog /var/www/html/logs/drupal.dev/access.log combined
+</VirtualHost>
+EOT
+sudo mkdir -p /var/www/html/logs/drupal.dev
+sudo a2ensite drupal.dev.conf
+sudo systemctl restart apache2
 
 # check installed
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALL CHECKLIST..............................................................$(tput sgr0)\n"
@@ -181,37 +241,13 @@ echo -e "php.........................................$(php -v | head -n 1 | awk 
 echo -e "git.........................................$(git --version | awk '{print $3}')"
 echo -e "hub.........................................$(hub --version | tail -n 1 | awk '{print $3}')"
 echo -e "atom........................................$(atom -v | head -n 1 | awk '{print $3}')"
+echo -e "composer....................................$(composer -V | awk '{print $3}')"
+echo -e "\n"
 
-# Lubuntu panels setup
-echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
-if test -a ~/devenv-lubuntu/panels; then
-    cp ~/devenv-lubuntu/panels ~/.config/lxpanel/Lubuntu/panels
-    sudo lxpanelctl restart
-else
-    echo -e "Panels config not found, continuing...\n"
-fi
+# update/upgrade check - probably nothing to upgrade, but check anyway
+sudo apt -qq update && sudo apt -qqy upgrade
+echo -e "\n"
 
-# github SSH setup
-echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP GITHUB SSH..........................................................$(tput sgr0)\n"
-if ls -al ~/.ssh | grep id_rsa.pub &>/dev/null; then
-    echo -e "ssh key found, assuming already set up (if not, do it manually).\n"
-else
-    sudo apt install -y xclip
-    ssh-keygen -t rsa -b 4096 -C "bocoroth@gmail.com"
-    eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/id_rsa
-    xclip -sel clip < ~/.ssh/id_rsa.pub
-    read -p "Key copied to clipboard. Press enter to launch firefox (paste key into 'Key' box)."
-    firefox https://github.com/settings/ssh/new
-    read -p "Waiting... press enter once key is set up to test."
-    ssh -T git@github.com
-fi
-
-# set up phpmyadmin
-echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP PHPMYADMIN and MYSQL................................................$(tput sgr0)\n"
-sudo apt install -y phpmyadmin php-mbstring php-gettext
-sudo chown -R $USER:$(id -gn $USER) /var/www/html
-ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
-sudo phpenmod mbstring
-sudo systemctl restart apache2
+# finished
+read -p "Script finished. Press Enter to reboot or ctrl-c to cancel."
 sudo reboot
