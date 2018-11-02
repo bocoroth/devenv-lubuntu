@@ -146,16 +146,21 @@ else
     curl -sL https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
     sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
     sudo apt update && sudo apt install -y atom
-    echo -e ""
-fi
-
-sudo bash -c "cat > ~/.atom/config.cson" <<EOT
+	sudo bash -c "cat > ~/.atom/config.cson" <<EOT
 "*":
   core:
     telemetryConsent: "no"
+  editor:
+    showIndentGuide: true
+    softWrap: true
+    softWrapHangingIndent: 2
+    tabLength: 4
+    tabType: "hard"
   welcome:
     showOnStartup: false
 EOT
+	echo -e ""
+fi
 
 # Lubuntu panels setup
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
