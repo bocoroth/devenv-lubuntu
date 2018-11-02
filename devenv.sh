@@ -187,7 +187,9 @@ sudo systemctl restart apache2
 
 # set up drupal
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP DRUPAL.............................................................$(tput sgr0)\n"
+cd ~
 curl -sS https://getcomposer.org/installer -o composer-setup.php
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 sudo chown -R $USER .composer/
 composer -V
 echo -e "\n"
