@@ -194,7 +194,8 @@ else
 fi
 
 # set up phpmyadmin
-echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP PHPMYADMIN and MYSQL................................................$(tput sgr0)\n"
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP MYSQL and PHPMYADMIN................................................$(tput sgr0)\n"
+sudo mysql_secure_installation
 sudo apt install -y phpmyadmin php-mbstring php-gettext
 sudo chown -R $USER:$(id -gn $USER) /var/www/html
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
@@ -250,9 +251,10 @@ echo -e "Installing Drupal..........................."
 cd /var/tmp
 composer create-project drupal-composer/drupal-project:~7.0 drupal.localhost --stability dev --no-interaction
 cp -a --link /var/tmp/drupal.localhost/* /var/www/html/drupal.localhost/ && rm -rf /var/tmp/drupal.localhost
-sudo mysql -u root -e "CREATE DATABASE drupal_localhost"
+sudo mysql -u root -e "USE mysql;CREATE USER 'drupal'@'localhost' IDENTIFIED BY 'drupal';GRANT ALL PRIVILEGES ON *.* TO 'drupal'@'localhost';FLUSH PRIVILEGES;"
+sudo mysql -u drupal --password=drupal -e "CREATE DATABASE drupal_localhost"
 cd /var/www/html/drupal.localhost/web
-sudo ../vendor/bin/drush site-install --db-url=mysql://root:root@localhost/drupal_localhost
+sudo ../vendor/bin/drush site-install --db-url=mysql://drupal:drupal@localhost/drupal_localhost
 firefox http://drupal.localhost/web/
 read -p "Finish the Drupal install from the browser (ref user/pass above). Press enter to continue script when finished."
 echo -e "\n\n"
