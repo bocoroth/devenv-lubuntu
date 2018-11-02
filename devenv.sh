@@ -107,6 +107,7 @@ fi
 # LAMP Stack
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING LAMP stack...........................................................$(tput sgr0)\n"
 sudo apt install -y apache2 mariadb-server mariadb-client php php-common php-mysql php-gd php-cli
+echo -e ""
 
 # git
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING git..................................................................$(tput sgr0)\n"
@@ -153,6 +154,7 @@ echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.
 if test -a ~/devenv-lubuntu/panels; then
     cp ~/devenv-lubuntu/panels ~/.config/lxpanel/Lubuntu/panels
     sudo lxpanelctl restart
+    echo -e "Done!\n"
 else
     echo -e "Panels config not found, continuing...\n"
 fi
@@ -175,6 +177,7 @@ else
     firefox https://github.com/settings/ssh/new
     read -p "Waiting... press enter once key is set up to test."
     ssh -T git@github.com
+    echo -e ""
 fi
 
 # set up phpmyadmin
@@ -184,6 +187,7 @@ sudo chown -R $USER:$(id -gn $USER) /var/www/html
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 sudo phpenmod mbstring
 sudo systemctl restart apache2
+echo -e ""
 
 # set up drupal
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP DRUPAL.............................................................$(tput sgr0)\n"
@@ -192,7 +196,7 @@ curl -sS https://getcomposer.org/installer -o composer-setup.php
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 sudo chown -R $USER .composer/
 composer -V
-echo -e "\n"
+echo -e ""
 
 # -- apache virtual hosts
 echo -e "Creating Apache Virtual Hosts..............."
@@ -232,12 +236,13 @@ echo -e "Done.\n"
 echo -e "Installing Drupal..........................."
 cd /var/tmp
 composer create-project drupal-composer/drupal-project:~7.0 drupal.localhost --stability dev --no-interaction
-cp -a --link /var/tmp/drupal.localhost/* /var/www/html/drupal.localhost/* && rm-rf /var/tmp/drupal.localhost
+cp -a --link /var/tmp/drupal.localhost/* /var/www/html/drupal.localhost/ && rm -rf /var/tmp/drupal.localhost
 sudo mysql -u root -e "CREATE DATABASE drupal_localhost"
 cd /var/www/html/drupal.localhost/web
 sudo ../vendor/bin/drush site-install --db-url=mysql://root:root@localhost/drupal_localhost
 firefox http://drupal.localhost/web/
 read -p "Finish the Drupal install from the browser (ref user/pass above). Press enter to continue script when finished."
+echo -e "\n\n"
 
 # check installed
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALL CHECKLIST..............................................................$(tput sgr0)\n"
