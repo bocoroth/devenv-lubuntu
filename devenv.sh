@@ -194,23 +194,47 @@ echo -e "\n"
 
 # -- apache virtual hosts
 echo -e "Creating Apache Virtual Hosts..............."
-sudo mkdir -p /var/www/drupal.dev/public_html
-sudo chown -R $USER:$USER /var/www/drupal.dev/public_html
-sudo chmod -R 755 /var/www
-sudo echo "<html><head><title>Virtual Host Works\!</title></head><body><h1>The drupal.test virtual host is working\!</h1></body></html>" > /var/www/drupal.dev/public_html/index.html
-sudo bash -c "cat > /etc/apache2/sites-available/drupal.dev.conf" <<EOT
+sudo mkdir -p /var/www/html/drupal.localhost/public_html
+sudo chown -R $USER:$USER /var/www/html/drupal.localhost/public_html
+sudo chmod -R 755 /var/www/html
+sudo echo -e '<html><head><title>Virtual Host Works!</title></head><body><h1>The drupal.localhost virtual host is working!</h1></body></html>' > /var/www/html/drupal.localhost/public_html/index.html
+sudo bash -c "cat > /etc/apache2/sites-available/drupal.localhost.conf" <<EOT
 <VirtualHost *:80>
     ServerAdmin bocoroth@gmail.com
-    ServerName drupal.dev
-    ServerAlias www.drupal.dev
-    DocumentRoot /var/www/drupal.dev/public_html
-    ErrorLog /var/www/html/logs/drupal.dev/error.log
-    CustomLog /var/www/html/logs/drupal.dev/access.log combined
+    ServerName drupal.localhost
+    ServerAlias www.drupal.localhost
+    DocumentRoot /var/www/html/drupal.localhost/public_html
+    ErrorLog /var/www/html/logs/drupal.localhost/error.log
+    CustomLog /var/www/html/logs/drupal.localhost/access.log combined
 </VirtualHost>
 EOT
-sudo mkdir -p /var/www/html/logs/drupal.dev
-sudo a2ensite drupal.dev.conf
+sudo mkdir -p /var/www/html/logs/drupal.localhost
+sudo a2ensite drupal.localhost.conf
 sudo systemctl restart apache2
+echo -e "\n\nOutputting contents of http://drupal.localhost/ ......\n\n\n\n"
+curl http://drupal.localhost/
+echo -e "\n\n\n\n"
+
+# -- apache permissions
+echo -e "Setting Apache permissions.................."
+sudo chgrp -R www-data /var/www/html
+sudo find /var/www/html -type d -exec chmod g+rx {} +
+sudo find /var/www/html -type f -exec chmod g+r {} +
+sudo chown -R $USER /var/www/html/
+sudo find /var/www/html -type d -exec chmod u+rwx {} +
+sudo find /var/www/html -type f -exec chmod u+rw {} +
+sudo find /var/www/html -type d -exec chmod g+s {} +
+echo -e "Done.\n"
+
+# -- install Drupal
+echo -e "Installing Drupal..........................."
+cd /var/www/html
+composer create-project drupal-composer/drupal-project:~7.0 drupal.localhost --stability dev --no-interaction
+sudo mysql -u root -e "CREATE DATABASE drupal_localhost"
+cd /var/www/html/drupal.localhost/web
+sudo ../vendor/bin/drush site-install --db-url=mysql://root:root@localhost/drupal_localhost
+firefox http://drupal.localhost/web/
+read -p "Finish the Drupal install from the browser (ref user/pass above). Press enter to continue script when finished."
 
 # check installed
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALL CHECKLIST..............................................................$(tput sgr0)\n"
@@ -242,6 +266,7 @@ echo -e "git.........................................$(git --version | awk '{pri
 echo -e "hub.........................................$(hub --version | tail -n 1 | awk '{print $3}')"
 echo -e "atom........................................$(atom -v | head -n 1 | awk '{print $3}')"
 echo -e "composer....................................$(composer -V | awk '{print $3}')"
+echo -e "drupal......................................$(cat /var/www/html/drupal.localhost/web/CHANGELOG.txt | head -n 1 | awk '{print $2}' | rev | cut -c 2- | rev)"
 echo -e "\n"
 
 # update/upgrade check - probably nothing to upgrade, but check anyway
