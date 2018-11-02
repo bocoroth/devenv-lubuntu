@@ -230,6 +230,11 @@ sudo bash -c "cat > /etc/apache2/sites-available/drupal.localhost.conf" <<EOT
     DocumentRoot /var/www/html/drupal.localhost
     ErrorLog /var/www/html/logs/drupal.localhost/error.log
     CustomLog /var/www/html/logs/drupal.localhost/access.log combined
+	<Directory "/var/www/html/drupal.localhost/web">
+		Options Indexes FollowSymLinks
+		AllowOverride All
+		Require all granted
+	</Directory>
 </VirtualHost>
 EOT
 sudo mkdir -p /var/www/html/logs/drupal.localhost
