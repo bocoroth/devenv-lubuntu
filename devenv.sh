@@ -100,7 +100,7 @@ echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING angular cli....
 if sudo npm -g list | grep "angular/cli@" &>/dev/null; then
     echo -e "angular cli is already installed.\n"
 else
-    sudo npm install -g @angular/cli
+    sudo npm install -fg @angular/cli
     echo -e ""
 fi
 
@@ -146,7 +146,8 @@ else
     curl -sL https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
     sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
     sudo apt update && sudo apt install -y atom
-    install -D ~/.atom/config.cson
+    mkdir ~/.atom
+    touch ~/.atom/config.cson
     sudo bash -c "cat > ~/.atom/config.cson" <<EOT
 "*":
   core:
@@ -233,6 +234,7 @@ sudo bash -c "cat > /etc/apache2/sites-available/drupal.localhost.conf" <<EOT
 EOT
 sudo mkdir -p /var/www/html/logs/drupal.localhost
 sudo a2ensite drupal.localhost.conf
+a2enmod rewrite
 sudo systemctl restart apache2
 echo -e "\n\nOutputting contents of http://drupal.localhost/ ......\n\n\n\n"
 curl http://drupal.localhost/
@@ -258,6 +260,7 @@ sudo mysql -u root -e "USE mysql;CREATE USER 'drupal'@'localhost' IDENTIFIED BY 
 sudo mysql -u drupal --password=drupal -e "CREATE DATABASE drupal_localhost"
 cd /var/www/html/drupal.localhost/web
 sudo ../vendor/bin/drush site-install --db-url=mysql://drupal:drupal@localhost/drupal_localhost
+sudo systemctl restart apache2
 read -p "Press enter to finish the Drupal install from the browser (ref user/pass above). Close browser to continue script when finished."
 firefox http://drupal.localhost/web/
 echo -e "\n\n"
