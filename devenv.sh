@@ -149,6 +149,14 @@ else
     echo -e ""
 fi
 
+sudo bash -c "cat > ~/.atom/config.cson" <<EOT
+"*":
+  core:
+    telemetryConsent: "no"
+  welcome:
+    showOnStartup: false
+EOT
+
 # Lubuntu panels setup
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP LUBUNTU PANELS.......................................................$(tput sgr0)\n"
 if test -a ~/devenv-lubuntu/panels; then
