@@ -100,7 +100,7 @@ echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING angular cli....
 if sudo npm -g list | grep "angular/cli@" &>/dev/null; then
     echo -e "angular cli is already installed.\n"
 else
-    sudo npm install -fg @angular/cli
+    sudo npm install -g @angular/cli
     echo -e ""
 fi
 
@@ -234,7 +234,7 @@ sudo bash -c "cat > /etc/apache2/sites-available/drupal.localhost.conf" <<EOT
 EOT
 sudo mkdir -p /var/www/html/logs/drupal.localhost
 sudo a2ensite drupal.localhost.conf
-a2enmod rewrite
+sudo a2enmod rewrite
 sudo systemctl restart apache2
 echo -e "\n\nOutputting contents of http://drupal.localhost/ ......\n\n\n\n"
 curl http://drupal.localhost/
