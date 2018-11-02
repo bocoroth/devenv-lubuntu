@@ -196,16 +196,16 @@ echo -e "\n"
 
 # -- apache virtual hosts
 echo -e "Creating Apache Virtual Hosts..............."
-sudo mkdir -p /var/www/html/drupal.localhost/public_html
-sudo chown -R $USER:$USER /var/www/html/drupal.localhost/public_html
+sudo mkdir -p /var/www/html/drupal.localhost
+sudo chown -R $USER:$USER /var/www/html/drupal.localhost
 sudo chmod -R 755 /var/www/html
-sudo echo -e '<html><head><title>Virtual Host Works!</title></head><body><h1>The drupal.localhost virtual host is working!</h1></body></html>' > /var/www/html/drupal.localhost/public_html/index.html
+sudo echo -e '<html><head><title>Virtual Host Works!</title></head><body><h1>The drupal.localhost virtual host is working!</h1></body></html>' > /var/www/html/drupal.localhost/index.html
 sudo bash -c "cat > /etc/apache2/sites-available/drupal.localhost.conf" <<EOT
 <VirtualHost *:80>
     ServerAdmin bocoroth@gmail.com
     ServerName drupal.localhost
     ServerAlias www.drupal.localhost
-    DocumentRoot /var/www/html/drupal.localhost/public_html
+    DocumentRoot /var/www/html/drupal.localhost
     ErrorLog /var/www/html/logs/drupal.localhost/error.log
     CustomLog /var/www/html/logs/drupal.localhost/access.log combined
 </VirtualHost>
@@ -230,8 +230,9 @@ echo -e "Done.\n"
 
 # -- install Drupal
 echo -e "Installing Drupal..........................."
-cd /var/www/html
+cd /var/tmp
 composer create-project drupal-composer/drupal-project:~7.0 drupal.localhost --stability dev --no-interaction
+cp -a --link /var/tmp/drupal.localhost/* /var/www/html/drupal.localhost/* && rm-rf /var/tmp/drupal.localhost
 sudo mysql -u root -e "CREATE DATABASE drupal_localhost"
 cd /var/www/html/drupal.localhost/web
 sudo ../vendor/bin/drush site-install --db-url=mysql://root:root@localhost/drupal_localhost
