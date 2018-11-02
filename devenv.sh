@@ -146,7 +146,8 @@ else
     curl -sL https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
     sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
     sudo apt update && sudo apt install -y atom
-	sudo bash -c "cat > ~/.atom/config.cson" <<EOT
+    install -D ~/.atom/config.cson
+    sudo bash -c "cat > ~/.atom/config.cson" <<EOT
 "*":
   core:
     telemetryConsent: "no"
@@ -206,6 +207,8 @@ echo -e ""
 # set up drupal
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP DRUPAL.............................................................$(tput sgr0)\n"
 cd ~
+# -- install composer
+echo -e "Installing composer........................."
 curl -sS https://getcomposer.org/installer -o composer-setup.php
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 sudo chown -R $USER .composer/
@@ -255,8 +258,8 @@ sudo mysql -u root -e "USE mysql;CREATE USER 'drupal'@'localhost' IDENTIFIED BY 
 sudo mysql -u drupal --password=drupal -e "CREATE DATABASE drupal_localhost"
 cd /var/www/html/drupal.localhost/web
 sudo ../vendor/bin/drush site-install --db-url=mysql://drupal:drupal@localhost/drupal_localhost
+read -p "Press enter to finish the Drupal install from the browser (ref user/pass above). Close browser to continue script when finished."
 firefox http://drupal.localhost/web/
-read -p "Finish the Drupal install from the browser (ref user/pass above). Press enter to continue script when finished."
 echo -e "\n\n"
 
 # check installed
