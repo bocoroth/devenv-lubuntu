@@ -161,6 +161,7 @@ else
   welcome:
     showOnStartup: false
 EOT
+	apm install minimap
 	echo -e ""
 fi
 
@@ -259,7 +260,7 @@ echo -e "Done.\n"
 # -- install Drupal
 echo -e "Installing Drupal..........................."
 cd /var/tmp
-composer create-project drupal-composer/drupal-project:~7.0 drupal.localhost --stability dev --no-interaction
+composer create-project drupal-composer/drupal-project:7.x-dev drupal.localhost --stability dev --no-interaction
 cp -a --link /var/tmp/drupal.localhost/* /var/www/html/drupal.localhost/ && rm -rf /var/tmp/drupal.localhost
 sudo mysql -u root -e "USE mysql;CREATE USER 'drupal'@'localhost' IDENTIFIED BY 'drupal';GRANT ALL PRIVILEGES ON *.* TO 'drupal'@'localhost';FLUSH PRIVILEGES;"
 sudo mysql -u drupal --password=drupal -e "CREATE DATABASE drupal_localhost"
