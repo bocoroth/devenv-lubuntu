@@ -308,6 +308,7 @@ echo -e "\n"
 
 # update/upgrade check - probably nothing to upgrade, but check anyway
 sudo apt -qq update && sudo apt -qqy upgrade
+sudo apt auto-remove
 echo -e "\n"
 
 # finished
