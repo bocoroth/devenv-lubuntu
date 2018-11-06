@@ -201,7 +201,7 @@ fi
 # set up phpmyadmin
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP MYSQL and PHPMYADMIN................................................$(tput sgr0)\n"
 sudo mysql_secure_installation
-sudo apt install -y phpmyadmin php7.1-mbstring php7.1-gettext
+sudo apt install -y phpmyadmin php7.1-mbstring php7.1-gettext php7.1-curl php7.1-xml
 sudo chown -R $USER:$(id -gn $USER) /var/www/html
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 sudo phpenmod mbstring
