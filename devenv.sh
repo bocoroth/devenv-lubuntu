@@ -106,7 +106,7 @@ fi
 
 # LAMP Stack
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING LAMP stack...........................................................$(tput sgr0)\n"
-sudo apt install -y apache2 mariadb-server mariadb-client php php-common php-mysql php-gd php-cli
+sudo apt install -y apache2 mariadb-server mariadb-client php7.1 php7.1-common php7.1-mysql php7.1-gd php7.1-cli
 echo -e ""
 
 # git
@@ -199,7 +199,7 @@ fi
 # set up phpmyadmin
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)SETTING UP MYSQL and PHPMYADMIN................................................$(tput sgr0)\n"
 sudo mysql_secure_installation
-sudo apt install -y phpmyadmin php-mbstring php-gettext
+sudo apt install -y phpmyadmin php7.1-mbstring php7.1-gettext
 sudo chown -R $USER:$(id -gn $USER) /var/www/html
 ln -s /usr/share/phpmyadmin /var/www/html/phpmyadmin
 sudo phpenmod mbstring
