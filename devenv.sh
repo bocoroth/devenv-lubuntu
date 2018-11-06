@@ -81,7 +81,7 @@ if dpkg-query -W -f='${Status}' mongodb-org | grep "ok installed" &>/dev/null; t
 else
     sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
     echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
-    sudo apt update && sudo apt install -y mongodb-org
+    sudo apt -q update && sudo apt install -y mongodb-org
     echo -e ""
 fi
 sudo service mongod start
@@ -106,6 +106,8 @@ fi
 
 # LAMP Stack
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING LAMP stack...........................................................$(tput sgr0)\n"
+sudo add-apt-repository ppa:ondrej/php
+sudo apt -q update
 sudo apt install -y apache2 mariadb-server mariadb-client php7.1 php7.1-common php7.1-mysql php7.1-gd php7.1-cli
 echo -e ""
 
