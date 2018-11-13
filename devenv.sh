@@ -6,6 +6,15 @@ cd ~
 sudo apt -qq update && sudo apt -y upgrade
 echo -e ""
 
+# filezilla
+echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING filezilla...................................................$(tput sgr0)\n"
+if dpkg-query -W -f='${Status}' filezilla | grep "ok installed" &>/dev/null; then
+    echo -e "filezilla is already installed.\n"
+else
+    sudo apt install -y filezilla
+    echo -e ""
+fi
+
 # curl, build-essential
 echo -e "$(tput setaf 232)$(tput setab 11)$(tput bold)INSTALLING curl and build-essential.............................................$(tput sgr0)\n"
 if command -v curl &>/dev/null; then
