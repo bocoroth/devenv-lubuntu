@@ -173,6 +173,9 @@ else
     showOnStartup: false
 EOT
 	apm install minimap
+	apm install linter
+	apm install linter-eslint
+	apm install prettier-atom
 	echo -e ""
 fi
 
