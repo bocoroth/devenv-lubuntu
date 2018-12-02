@@ -174,8 +174,8 @@ else
 EOT
 	apm install minimap
 	apm install linter
-	apm install linter-eslint
-	apm install prettier-atom
+	apm install linter-tslint
+	apm install atom-beautify
 	echo -e ""
 fi
 
